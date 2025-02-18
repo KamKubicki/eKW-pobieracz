@@ -79,6 +79,23 @@ class DownloadView(BaseView):
         self.add_task_dialog.open = True
         self.update()
 
+    def update_tasks(self):
+        """Aktualizuje listę zadań"""
+        self.tasks_column.controls.clear()
+
+        for task in self.controller.tasks:
+            card = TaskCard(
+                title=task.name,
+                on_delete=lambda t=task: self.controller.remove_task(t),
+                on_start=lambda t=task: self.controller.start_task(t),
+                on_stop=lambda t=task: self.controller.stop_task(t),
+                on_pause=lambda t=task: self.controller.pause_task(t)
+            )
+            self.tasks_column.controls.append(card)  # Najpierw dodajemy do strony
+            card.update_progress(task.progress, task.message)  # Potem aktualizujemy
+
+        self.update()
+
     def _add_file_task(self):
         """Dodaje zadanie z pliku"""
         self.controller.add_file_task()

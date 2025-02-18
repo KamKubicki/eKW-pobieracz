@@ -71,4 +71,6 @@ class TaskCard(ft.Container):
         """Aktualizuje postęp i status"""
         self.progress_bar.value = progress
         self.status_text.value = status
-        self.update()
+        # Aktualizujemy tylko jeśli kontrolka jest już na stronie
+        if hasattr(self, '_page') and self._page:
+            self.update()

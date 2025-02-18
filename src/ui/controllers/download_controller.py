@@ -1,13 +1,13 @@
-import time
+# src/ui/controllers/download_controller.py
+from pathlib import Path
 from typing import List, Optional
 import flet as ft
 from dataclasses import dataclass
 import threading
-
+#kam
 from src.core.agent import WorkDistributor
 from src.utils import logger
 from .base_controller import BaseController
-
 
 @dataclass
 class DownloadTask:
@@ -22,7 +22,6 @@ class DownloadTask:
     # Dodajemy parametry dla generatora
     generator_params: dict = None
 
-
 class DownloadController(BaseController):
     def __init__(self, page: ft.Page):
         super().__init__(page)
@@ -30,8 +29,76 @@ class DownloadController(BaseController):
         self.distributor = WorkDistributor()
         self.processing_thread: Optional[threading.Thread] = None
 
+    def add_file_task(self):
+        """Dodaje zadanie z pliku"""
+        from .dialog_controller import DialogController
+
+        paths = DialogController.open_file()
+        if not paths:
+            return
+
+        for path in paths:
+            task = DownloadTask(
+                name=Path(path).name,
+                path=path,
+                type="list"
+            )
+            self.tasks.append(task)
+        self.update()
+
+    def add_clipboard_task(self):
+        """Dodaje zadanie ze schowka"""
+        import pyperclip
+
+        content = pyperclip.paste()
+        if not content:
+            return
+
+        # Zapisz zawartość schowka do tymczasowego pliku
+        temp_path = Path("temp_clipboard.txt")
+        temp_path.write_text(content, encoding="utf-8")
+
+        task = DownloadTask(
+            name="Schowek",
+            path=str(temp_path),
+            type="clipboard"
+        )
+        self.tasks.append(task)
+        self.update()
+
+    def remove_task(self, task: DownloadTask):
+        """Usuwa zadanie"""
+        if task in self.tasks:
+            self.tasks.remove(task)
+            self.update()
+
+    def start_task(self, task: DownloadTask):
+        """Rozpoczyna wykonywanie zadania"""
+        if task.type == "generator":
+            self.process_generator_task(task)
+        else:
+            # Implementacja dla innych typów zadań
+            pass
+
+    def stop_task(self, task: DownloadTask):
+        """Zatrzymuje wykonywanie zadania"""
+        # Implementacja zatrzymywania zadania
+        pass
+
+    def pause_task(self, task: DownloadTask):
+        """Wstrzymuje wykonywanie zadania"""
+        # Implementacja wstrzymywania zadania
+        pass
+
+    def update(self):
+        """Aktualizuje widok"""
+        if hasattr(self, '_view'):
+            self._view.update_tasks()
+
     def add_generator_task(self):
         """Dodaje nowe zadanie generatora"""
+        print("DownloadController: Tworzenie zadania generatora...")
+
         # Tworzymy zadanie z domyślnymi parametrami generatora
         task = DownloadTask(
             name="Generator",
@@ -45,18 +112,26 @@ class DownloadController(BaseController):
                 "control_digit": ""
             }
         )
-        self.tasks.append(task)
+
+        # Najpierw pokazujemy dialog
+        print("DownloadController: Pokazywanie dialogu generatora...")
         self._show_generator_dialog(task)
-        self.update()
+
+        # Dodajemy zadanie i aktualizujemy widok tylko po zamknięciu dialogu
+        self.tasks.append(task)
+        if hasattr(self, '_view') and self._view:
+            self._view.update_tasks()
 
     def _show_generator_dialog(self, task: DownloadTask):
         """Pokazuje dialog konfiguracji generatora"""
-
+        print("DownloadController: Tworzenie dialogu...")  # Debug print
         def close_dialog():
+            print("DownloadController: Zamykanie dialogu...")  # Debug print
             dialog.open = False
             self.page.update()
 
         def save_generator_params():
+            print("DownloadController: Zapisywanie parametrów...")  # Debug print
             task.generator_params.update({
                 "sad": sad_input.value,
                 "start": start_input.value,
@@ -101,6 +176,7 @@ class DownloadController(BaseController):
 
         # Tworzenie dialogu
         dialog = ft.AlertDialog(
+            modal=True,
             title=ft.Text("Konfiguracja generatora"),
             content=ft.Column(
                 controls=[
@@ -121,6 +197,7 @@ class DownloadController(BaseController):
         )
 
         # Pokazanie dialogu
+        print("DownloadController: Wyświetlanie dialogu...")  # Debug print
         self.page.dialog = dialog
         dialog.open = True
         self.page.update()
