@@ -1,0 +1,6 @@
+flet>=0.7.0
+selenium>=4.11.0
+beautifulsoup4>=4.12.0
+pandas>=2.0.0
+pyperclip>=1.8.2
+pypdf>=3.12.0

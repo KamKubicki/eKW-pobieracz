@@ -1,0 +1,11 @@
+
+- organizacja kodu która wydaje się losowa, coupling z headlessowa przeglądarka, hardcodowanie tu i tam, primitive obsession
+- niespójny casing w nazwach metod/klas/funkcji, mieszanie polskiego i angielskiego w naming conventions (if zupelna czy tam if try_zupelna albo sad_list)
+- funkcje po kilkaset linii, które mogłyby zostać rozbite na ładne logiczne części i ubrane w przyzwoitą abstrakcję
+
+można by tak się rozwlec na 20 minut. kolega wyżej ma rację - kilka wersji dalej będziesz sam na siebie kląć, ze do tego dopuściłeś
+
+mam nadzieję że pomogłem
+
+
+ale nadal zależnością są u cb browsery z tego co pobieżnie zerknąłem. implementacja która pobiera księgi wieczyste powinna mieć w chvjv co jest twoim connectorem (czy tam drajwerem).
