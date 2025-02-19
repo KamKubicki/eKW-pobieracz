@@ -124,24 +124,7 @@ class DownloadController(BaseController):
 
     def _show_generator_dialog(self, task: DownloadTask):
         """Pokazuje dialog konfiguracji generatora"""
-        print("DownloadController: Tworzenie dialogu...")  # Debug print
-        def close_dialog():
-            print("DownloadController: Zamykanie dialogu...")  # Debug print
-            dialog.open = False
-            self.page.update()
-
-        def save_generator_params():
-            print("DownloadController: Zapisywanie parametrów...")  # Debug print
-            task.generator_params.update({
-                "sad": sad_input.value,
-                "start": start_input.value,
-                "end": end_input.value,
-                "last_digit": last_digit_input.value,
-                "control_digit": control_digit_input.value
-            })
-            task.name = f"Generator: {sad_input.value} ({start_input.value}-{end_input.value})"
-            close_dialog()
-            self.update()
+        print("DownloadController: Tworzenie dialogu...")
 
         # Tworzenie kontrolek formularza
         sad_input = ft.TextField(
@@ -174,8 +157,20 @@ class DownloadController(BaseController):
             hint_text="np. 7"
         )
 
-        # Tworzenie dialogu
-        dialog = ft.AlertDialog(
+        def save_generator_params(e):
+            task.generator_params.update({
+                "sad": sad_input.value,
+                "start": start_input.value,
+                "end": end_input.value,
+                "last_digit": last_digit_input.value,
+                "control_digit": control_digit_input.value
+            })
+            task.name = f"Generator: {sad_input.value} ({start_input.value}-{end_input.value})"
+            dlg.open = False
+            self.page.update()
+            self.update()
+
+        dlg = ft.AlertDialog(
             modal=True,
             title=ft.Text("Konfiguracja generatora"),
             content=ft.Column(
@@ -190,16 +185,16 @@ class DownloadController(BaseController):
                 spacing=10
             ),
             actions=[
-                ft.TextButton("Anuluj", on_click=lambda _: close_dialog()),
-                ft.TextButton("Zapisz", on_click=lambda _: save_generator_params()),
+                ft.TextButton("Anuluj", on_click=lambda e: setattr(dlg, 'open', False)),
+                ft.TextButton("Zapisz", on_click=save_generator_params),
             ],
             actions_alignment=ft.MainAxisAlignment.END,
         )
 
         # Pokazanie dialogu
-        print("DownloadController: Wyświetlanie dialogu...")  # Debug print
-        self.page.dialog = dialog
-        dialog.open = True
+        self.page.dialog = dlg
+        self.page.open(dlg)
+        dlg.open = True
         self.page.update()
 
     def _create_view(self) -> ft.Control:

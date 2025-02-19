@@ -12,7 +12,8 @@ class BaseView(ft.Container):
         self.border_radius = ft.border_radius.all(5)
         self.padding = 5
         self.expand = 1
+        self.page = None  # Dodajemy atrybut page
 
-    @property
-    def page(self):
-        return self.content.page if self.content else None
+    # @property
+    # def page(self):
+    #     return self.content.page if self.content else None

@@ -10,6 +10,7 @@ class DownloadView(BaseView):
     def __init__(self, controller):
         super().__init__()
         self.controller = controller
+        self.page = controller.page
 
         # Lista zadań
         self.tasks_column = ft.Column(
@@ -53,7 +54,7 @@ class DownloadView(BaseView):
                         ft.ElevatedButton(
                             text="Anuluj",
                             expand=1,
-                            on_click=lambda _: self.add_task_dialog.close()
+                            on_click=lambda _: self.page.close(self.add_task_dialog)
                         ),
                     ],
                 ),
@@ -68,16 +69,20 @@ class DownloadView(BaseView):
                     controls=[self.add_button],
                     alignment=ft.MainAxisAlignment.CENTER
                 ),
-                self.add_task_dialog
             ],
             spacing=20,
             expand=1
         )
 
+    # def _show_add_task_dialog(self, _):
+    #     """Pokazuje dialog dodawania zadań"""
+    #     self.add_task_dialog.open = True
+    #     self.update()
     def _show_add_task_dialog(self, _):
         """Pokazuje dialog dodawania zadań"""
-        self.add_task_dialog.open = True
-        self.update()
+        self.page.open(self.add_task_dialog)
+        # self.add_task_dialog.open = True
+        self.page.update()
 
     def update_tasks(self):
         """Aktualizuje listę zadań"""
@@ -98,21 +103,24 @@ class DownloadView(BaseView):
 
     def _add_file_task(self):
         """Dodaje zadanie z pliku"""
+        self._close_dialog()
         self.controller.add_file_task()
-        self.add_task_dialog.open = False
-        self.update()
 
     def _add_clipboard_task(self):
         """Dodaje zadanie ze schowka"""
+        self._close_dialog()
         self.controller.add_clipboard_task()
-        self.add_task_dialog.open = False
-        self.update()
+
+    def _close_dialog(self):
+        """Zamyka dialog"""
+        if self.add_task_dialog:
+            self.add_task_dialog.open = False
+            self.page.update()
 
     def _add_generator_task(self):
         """Dodaje zadanie generatora"""
+        self._close_dialog()
         self.controller.add_generator_task()
-        self.add_task_dialog.open = False
-        self.update()
 
     def update_tasks(self):
         """Aktualizuje listę zadań"""

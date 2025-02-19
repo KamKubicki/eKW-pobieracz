@@ -1,7 +1,7 @@
 {
  "color": "Blue",
- "theme": "Red",
- "threads": 10,
+ "theme": "Orange",
+ "threads": "",
  "save_path": "D:\\lukasz\\python\\KW - eKW pobieracz\\test",
  "already_exist": false,
  "page_background": false,
@@ -15,14 +15,15 @@
  "wanted_id": "D:/Python/KW - eKW pobieracz/test/lista_wanted.txt",
  "save_report_json": false,
  "save_report_csv": false,
- "save_pdf": true,
+ "save_pdf": "false",
  "save_txt": false,
- "save_html": false,
- "save_json": false,
+ "save_html": "true",
+ "save_json": "false",
  "save_xlsx": false,
  "dzial_1o": true,
  "dzial_1s": true,
  "dzial_2": true,
  "dzial_3": true,
- "dzial_4": true
+ "dzial_4": true,
+ "theme_mode": "Jasny"
 }

@@ -13,9 +13,10 @@ class BaseController:
 
     @property
     def view(self) -> ft.Control:
-        """Zwraca widok kontrolera"""
         if not self._view:
             self._view = self._create_view()
+            if hasattr(self._view, 'page'):
+                self._view.page = self.page  # Przekazujemy page do widoku
         return self._view
 
     def _create_view(self) -> ft.Control:
